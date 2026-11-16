@@ -1,0 +1,52 @@
+﻿@model IReadOnlyList<devops.Models.Student>
+
+@{
+    ViewData["Title"] = "Student Manager";
+    var keyword = ViewData["Keyword"] as string ?? string.Empty;
+}
+
+<section class="hero-panel rounded-4 p-4 p-md-5 mb-4 text-white">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+            <span class="badge text-bg-light text-primary mb-3">DEVOPS LAB 5</span>
+            <h1 class="display-5 fw-bold">Student Manager</h1>
+            <p class="lead mb-0">Quản lý danh sách sinh viên với quy trình Git Flow và Code Review trên GitHub.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end"><div class="stat-card rounded-3 p-3"><span class="d-block small">Tổng số sinh viên</span><strong class="display-6">@Model.Count</strong></div></div>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3"><div><h2 class="h4 mb-1">Danh sách sinh viên</h2><p class="text-secondary mb-0">Tìm theo mã, họ tên hoặc khóa học.</p></div><span class="badge rounded-pill text-bg-primary">@Model.Count kết quả</span></div>
+            <form method="get" class="input-group mb-4"><input name="keyword" value="@keyword" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." aria-label="Từ khóa tìm kiếm" /><button class="btn btn-primary" type="submit">Tìm kiếm</button></form>
+            <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Mã SV</th><th>Họ và tên</th><th>Tuổi</th><th>Khóa</th></tr></thead><tbody>
+            @foreach (var student in Model)
+            {
+                <tr><td><span class="student-code">@student.StudentId</span></td><td class="fw-semibold">@student.Name</td><td>@student.Age</td><td>@student.Grade</td></tr>
+            }
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="4" class="text-center text-secondary py-4">Không tìm thấy sinh viên phù hợp.</td></tr>
+            }
+            </tbody></table></div>
+        </div></div>
+    </div>
+    <div class="col-lg-4"><div class="card border-0 shadow-sm"><div class="card-body p-4">
+        <h2 class="h4">Thêm sinh viên</h2><p class="text-secondary">Bổ sung thành viên mới vào danh sách.</p>
+        <form asp-action="Add" method="post"><div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+            <div class="mb-3"><label class="form-label" for="StudentId">Mã sinh viên</label><input class="form-control" id="StudentId" name="StudentId" required placeholder="SV004" /></div>
+            <div class="mb-3"><label class="form-label" for="Name">Họ và tên</label><input class="form-control" id="Name" name="Name" required placeholder="Nguyễn Văn D" /></div>
+            <div class="row g-3 mb-3"><div class="col-6"><label class="form-label" for="Age">Tuổi</label><input class="form-control" id="Age" name="Age" type="number" min="16" max="100" required /></div><div class="col-6"><label class="form-label" for="Grade">Khóa</label><input class="form-control" id="Grade" name="Grade" required placeholder="K22" /></div></div>
+            <button class="btn btn-primary w-100" type="submit">Thêm sinh viên</button>
+        </form>
+    </div></div></div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
